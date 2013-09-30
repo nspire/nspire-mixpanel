@@ -96,6 +96,9 @@ if __name__ == '__main__':
         api_key = os.environ.get('MP_API_KEY'),
         api_secret = os.environ.get('MP_API_SECRET')
     )
+    SVG_DIR = 'charts/'
+    if not os.path.exists(SVG_DIR):
+        os.makedirs(SVG_DIR)
     eventNames = api.request(['events', 'names'], {
         'type': 'general'
     })
