@@ -4,7 +4,7 @@
 #
 # Python API client library to consume mixpanel.com analytics data.
 
-import os
+import os, sys
 import pygal
 import hashlib
 import urllib
@@ -22,7 +22,7 @@ class Mixpanel(object):
     def __init__(self, api_key, api_secret):
         self.api_key = api_key
         self.api_secret = api_secret
-        
+
     def request(self, methods, params, format='json'):
         """
             methods - List of methods to be joined, e.g. ['events', 'properties', 'values']
@@ -44,13 +44,13 @@ class Mixpanel(object):
 
     def unicode_urlencode(self, params):
         """
-            Convert lists to JSON encoded strings, and correctly handle any 
+            Convert lists to JSON encoded strings, and correctly handle any
             unicode URL parameters.
         """
         if isinstance(params, dict):
             params = params.items()
         for i, param in enumerate(params):
-            if isinstance(param[1], list): 
+            if isinstance(param[1], list):
                 params[i] = (param[0], json.dumps(param[1]),)
 
         return urllib.urlencode(
@@ -59,7 +59,7 @@ class Mixpanel(object):
 
     def hash_args(self, args, secret=None):
         """
-            Hashes arguments by joining key=value pairs, appending a secret, and 
+            Hashes arguments by joining key=value pairs, appending a secret, and
             then taking the MD5 hex digest.
         """
         for a in args:
@@ -85,11 +85,15 @@ class Mixpanel(object):
             hash.update(secret)
         elif self.api_secret:
             hash.update(self.api_secret)
-        return hash.hexdigest() 
+        return hash.hexdigest()
+
+def check_for_api_error(data):
+    if 'error' in data:
+        sys.exit('Error: ' + data['error'])
 
 if __name__ == '__main__':
     api = Mixpanel(
-        api_key = os.environ.get('MP_API_KEY'), 
+        api_key = os.environ.get('MP_API_KEY'),
         api_secret = os.environ.get('MP_API_SECRET')
     )
     eventNames = api.request(['events', 'names'], {
