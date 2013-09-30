@@ -102,10 +102,26 @@ if __name__ == '__main__':
     eventNames = api.request(['events', 'names'], {
         'type': 'general'
     })
+    check_for_api_error(eventNames)
+    # print json.dumps(eventNames, indent=4)
     data = api.request(['events'], {
         'event' : eventNames,
         'unit' : 'day',
         'interval' : 31,
         'type': 'general'
     })
-    print json.dumps(data, indent=4, sort_keys=True)
+    check_for_api_error(data)
+    # print json.dumps(data, indent=4, sort_keys=True)
+
+    relevant_properties = {'About': ('Team',), 'Scrolled to': ('Home', 'About'), 'Nav Bar': ('Name',), 'DS': ('Carousel', 'Event Brite', 'Past Events'), 'Join Us': ('Header', 'Footer', 'Position Name'), 'Careers': ('Link Click', 'Position Name'), 'Home': ('BePartOfTheMoment', 'Carousel', 'Newsletter', 'WeChallangeThatsPossible'), 'Contact': ('Campus Ambassador', 'General Inquiry'), 'NTV': ('Video Name',), 'Footer': ('Link', 'Link Name')}
+    for event, properties in relevant_properties.iteritems():
+        for propertyName in properties:
+            data = api.request(['events', 'properties'], {
+                'event' : event,
+                'name': propertyName,
+                'unit' : 'day',
+                'interval' : 31,
+                'type': 'general'
+            })
+            check_for_api_error(data)
+            # print json.dumps(data, indent=4, sort_keys=True)
