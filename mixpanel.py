@@ -133,7 +133,7 @@ if __name__ == '__main__':
             })
             check_for_api_error(data)
             # print json.dumps(data, indent=4, sort_keys=True)
-            events_chart = pygal.Line(title=event + ': ' + propertyName, x_label_rotation=50, human_readable=True)
+            events_chart = pygal.StackedBar(title=event + ': ' + propertyName, x_label_rotation=50, human_readable=True)
             events_chart.x_labels = [''] + sorted(data['data']['series'])
             for propertyValue in sorted(data['data']['values'].keys()):
                 if propertyValue != 'undefined':
