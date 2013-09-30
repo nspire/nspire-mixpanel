@@ -4,6 +4,8 @@
 #
 # Python API client library to consume mixpanel.com analytics data.
 
+import os
+import pygal
 import hashlib
 import urllib
 import time
@@ -87,13 +89,16 @@ class Mixpanel(object):
 
 if __name__ == '__main__':
     api = Mixpanel(
-        api_key = 'YOUR KEY', 
-        api_secret = 'YOUR SECRET'
+        api_key = os.environ.get('MP_API_KEY'), 
+        api_secret = os.environ.get('MP_API_SECRET')
     )
-    data = api.request(['events'], {
-        'event' : ['pages',],
-        'unit' : 'hour',
-        'interval' : 24,
+    eventNames = api.request(['events', 'names'], {
         'type': 'general'
     })
-    print data
+    data = api.request(['events'], {
+        'event' : eventNames,
+        'unit' : 'day',
+        'interval' : 31,
+        'type': 'general'
+    })
+    print json.dumps(data, indent=4, sort_keys=True)
