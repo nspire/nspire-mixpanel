@@ -112,6 +112,14 @@ if __name__ == '__main__':
     })
     check_for_api_error(data)
     # print json.dumps(data, indent=4, sort_keys=True)
+    events_chart = pygal.Line(title=u'Events', x_label_rotation=50, human_readable=True)
+    events_chart.x_labels = [''] + sorted(data['data']['series'])
+    for event in eventNames:
+        data_points = []
+        for key in sorted(data['data']['values'][event].keys()):
+            data_points.append(data['data']['values'][event][key])
+        events_chart.add(event, data_points)
+    events_chart.render_to_file(SVG_DIR + 'Events.svg')
 
     relevant_properties = {'About': ('Team',), 'Scrolled to': ('Home', 'About'), 'Nav Bar': ('Name',), 'DS': ('Carousel', 'Event Brite', 'Past Events'), 'Join Us': ('Header', 'Footer', 'Position Name'), 'Careers': ('Link Click', 'Position Name'), 'Home': ('BePartOfTheMoment', 'Carousel', 'Newsletter', 'WeChallangeThatsPossible'), 'Contact': ('Campus Ambassador', 'General Inquiry'), 'NTV': ('Video Name',), 'Footer': ('Link', 'Link Name')}
     for event, properties in relevant_properties.iteritems():
@@ -125,3 +133,12 @@ if __name__ == '__main__':
             })
             check_for_api_error(data)
             # print json.dumps(data, indent=4, sort_keys=True)
+            events_chart = pygal.Line(title=event + ': ' + propertyName, x_label_rotation=50, human_readable=True)
+            events_chart.x_labels = [''] + sorted(data['data']['series'])
+            for propertyValue in sorted(data['data']['values'].keys()):
+                if propertyValue != 'undefined':
+                    data_points = []
+                    for key in sorted(data['data']['values'][propertyValue].keys()):
+                        data_points.append(data['data']['values'][propertyValue][key])
+                    events_chart.add(propertyValue, data_points)
+            events_chart.render_to_file(SVG_DIR + event + '_' + propertyName + '.svg')
